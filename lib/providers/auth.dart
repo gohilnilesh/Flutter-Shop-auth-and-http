@@ -4,9 +4,9 @@ import 'dart:convert';
 import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-   String? _token;
-  DateTime? _expiryDate;
-  String? _userid;
+   var _token;
+   var _expiryDate;
+   var _userid;
 
   bool get isAuth {
     return token != null;
@@ -14,7 +14,7 @@ class Auth with ChangeNotifier {
 
   String? get token {
     if (_expiryDate != null &&
-        _expiryDate!.isAfter(DateTime.now()) &&
+        _expiryDate.isAfter(DateTime.now()) &&
         _token != null) {
       return _token;
     }
@@ -69,5 +69,12 @@ class Auth with ChangeNotifier {
       password,
       'signUp',
     );
+  }
+
+  void logout() {
+    _token = null;
+    _userid = null;
+    _expiryDate = null;
+    notifyListeners();
   }
 }

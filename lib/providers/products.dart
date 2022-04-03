@@ -72,8 +72,8 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> fetchAndSetProduct([bool filterByUser = false]) async {
-    final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url = Uri.parse(
         'https://flutter-shop-a325b-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString');
     try {
@@ -150,13 +150,12 @@ class Products with ChangeNotifier {
           }));
       _items[prodIndex] = newProduct;
       notifyListeners();
-    } else {
-
-    }
+    } else {}
   }
 
   Future<void> deleteProduct(String id) async {
-   final url = Uri.parse( 'https://flutter-shop-a325b-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken');
+    final url = Uri.parse(
+        'https://flutter-shop-a325b-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken');
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);

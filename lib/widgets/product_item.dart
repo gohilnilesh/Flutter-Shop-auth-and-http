@@ -16,8 +16,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-    final cart = Provider.of<Cart>(context);
+    final product = Provider.of<Product>(context,listen: false);
+    final cart = Provider.of<Cart>(context,listen: false);
     final authToken = Provider.of<Auth>(context, listen: false);
     return InkWell(
       onTap: (() => Navigator.of(context).pushNamed(

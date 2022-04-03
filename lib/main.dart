@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, previousProducts) => Products(
               auth.token!,
               auth.userId!,
-              previousProducts?.items == null ? [] : previousProducts!.items),
+              previousProducts! == null?[]:previousProducts.items),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, prevOrders) => Orders(
             auth.token!,
             auth.userId!,
-            prevOrders!.orders == null ? [] : prevOrders.orders,
+            prevOrders! == null ? [] : prevOrders.orders,
           ),
         ),
       ],

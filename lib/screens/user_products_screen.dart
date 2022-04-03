@@ -42,27 +42,28 @@ class UserProductsScreen extends StatelessWidget {
                 : RefreshIndicator(
                     onRefresh: () => _refreshProduct(context),
                     child: Consumer<Products>(
-                      builder: (ctx, productData, ch) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: productData.items.length,
-                            itemBuilder: (_, i) => Padding(
-                              padding: const EdgeInsets.all(
-                                5.0,
-                              ),
-                              child: Column(
-                                children: [
-                                  UserProduct(
-                                    productData.items[i].id,
-                                    productData.items[i].title,
-                                    productData.items[i].imageUrl,
-                                  ),
-                                  const Divider(),
-                                ],
-                              ),
+                      builder: (ctx, productsData, ch) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: productsData.items.length,
+                          itemBuilder: (_, i) => Padding(
+                            padding: const EdgeInsets.all(
+                              5.0,
                             ),
-                          )),
+                            child: Column(
+                              children: [
+                                UserProduct(
+                                  productsData.items[i].id,
+                                  productsData.items[i].title,
+                                  productsData.items[i].imageUrl,
+                                ),
+                                const Divider(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
       ),
