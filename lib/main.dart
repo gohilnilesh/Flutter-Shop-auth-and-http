@@ -12,6 +12,7 @@ import 'screens/user_products_screen.dart';
 import './screens/edit_product_screen.dart';
 import './screens/auth_screen.dart';
 import './providers/auth.dart';
+import './screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,20 +27,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProxyProvider<Auth, Products>(
-          create: (ctx) => Products('', '', []),
+        ChangeNotifierProxyProvider<Auth?, Products?>(
+          create: (_) => Products('', '', []),
           update: (ctx, auth, previousProducts) => Products(
-              auth.token!,
+              auth!.token!,
               auth.userId!,
-              previousProducts! == null?[]:previousProducts.items),
+              previousProducts! == null ? [] : previousProducts.items),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProxyProvider<Auth, Orders>(
+        ChangeNotifierProxyProvider<Auth?, Orders?>(
           create: (ctx) => Orders('', '', []),
           update: (ctx, auth, prevOrders) => Orders(
-            auth.token!,
+            auth!.token!,
             auth.userId!,
             prevOrders! == null ? [] : prevOrders.orders,
           ),
@@ -54,13 +55,24 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.deepOrange,
             fontFamily: 'Lato',
           ),
-          home: auth.isAuth ? ProductOverView() : AuthScreen(),
+          home: auth.isAuth
+              ? ProductOverView()
+              : FutureBuilder(
+                  future: auth.tryautologin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
+          initialRoute: '/',
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
             CartScreen.routename: (ctx) => CartScreen(),
             OrderScreen.routeName: (ctx) => OrderScreen(),
             UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
             EditProductScreen.routeName: (ctx) => EditProductScreen(),
+            AuthScreen.routeName: (ctx) => AuthScreen(),
           },
         ),
       ),

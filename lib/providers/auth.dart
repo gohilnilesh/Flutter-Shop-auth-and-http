@@ -1,12 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:html';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/http_exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
-   var _token;
-   var _expiryDate;
-   var _userid;
+  var _token;
+  DateTime? _expiryDate;
+  var _userid;
+  Timer? _authTimer;
 
   bool get isAuth {
     return token != null;
@@ -14,7 +20,7 @@ class Auth with ChangeNotifier {
 
   String? get token {
     if (_expiryDate != null &&
-        _expiryDate.isAfter(DateTime.now()) &&
+        _expiryDate!.isAfter(DateTime.now()) &&
         _token != null) {
       return _token;
     }
@@ -49,7 +55,17 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      _autologout();
       notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode(
+        {
+          'token': _token,
+          'expiryDate': _expiryDate!.toIso8601String(),
+          'userId': _userid,
+        },
+      );
+      prefs.setString('userData', userData);
     } catch (error) {
       rethrow;
     }
@@ -71,10 +87,44 @@ class Auth with ChangeNotifier {
     );
   }
 
-  void logout() {
+  Future<bool> tryautologin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractedUserData =
+        json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = extractedUserData['token'];
+    _userid = extractedUserData['userId'];
+    _expiryDate = expiryDate;
+    notifyListeners();
+    return true;
+  }
+
+  Future<void> logout() async {
     _token = null;
     _userid = null;
     _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+      _authTimer = null;
+    }
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    // prefs.remove('userData');
+    prefs.clear();
+  }
+
+  void _autologout() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final timeToExpire = _expiryDate!.difference(DateTime.now()).inSeconds;
+    Timer(Duration(seconds: timeToExpire), logout);
   }
 }
