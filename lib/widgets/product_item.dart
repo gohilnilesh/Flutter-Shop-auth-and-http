@@ -16,8 +16,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context,listen: false);
-    final cart = Provider.of<Cart>(context,listen: false);
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     final authToken = Provider.of<Auth>(context, listen: false);
     return InkWell(
       onTap: (() => Navigator.of(context).pushNamed(
@@ -29,8 +29,11 @@ class ProductItem extends StatelessWidget {
         child: GridTile(
           child: Hero(
             tag: product.id,
-            child: Image.network(
-              product.imageUrl,
+            child: FadeInImage(
+              fadeInDuration: Duration(seconds: 2),
+
+              placeholder: const AssetImage('assets/img/prod-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
               fit: BoxFit.cover,
             ),
           ),

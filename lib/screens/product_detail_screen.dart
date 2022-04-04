@@ -19,52 +19,63 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<Products>(context, listen: false).findById(productId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadeditems.title),
+      // appBar: AppBar(
+      //   title: Text(loadeditems.title),
 
-      ),
+      // ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 300,
-              width: double.infinity,
-              margin: const EdgeInsets.all(5),
-              padding: const EdgeInsets.all(3),
-              child: Hero(
-                tag:loadeditems.id,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                loadeditems.title,
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
+              background: Hero(
+                tag: loadeditems.id,
                 child: Image.network(
                   loadeditems.imageUrl,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                SizedBox(height: 10),
+                Text(
+                  '\$${loadeditems.price}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  width: double.infinity,
+                  child: Text(
+                    loadeditems.desc,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
+                ),
+                const SizedBox(
+                  height: 800,
+                ),
+              ],
             ),
-            Text(
-              '\$${loadeditems.price}',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                '${loadeditems.desc}',
-                textAlign: TextAlign.center,
-                softWrap: true,
-              ),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -8,10 +8,6 @@ import '../widgets/app_drawer.dart';
 
 class OrderScreen extends StatelessWidget {
   static const routeName = '/orders';
-
-
-
-
   // var _isLoading = false;
   // @override
   // void initState() {
